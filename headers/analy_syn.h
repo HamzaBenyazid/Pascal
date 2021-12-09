@@ -6,7 +6,7 @@
 
 
 
-void analy_syn();
+void analy_syn(FILE *fp);
 void program();
 void block();
 void consts();
