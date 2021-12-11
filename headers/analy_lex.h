@@ -6,6 +6,7 @@
 #include<string.h>
 #include<ctype.h>
 #include"data.h"
+#include"./analy_sem.h"
 
 void lex_get_next_char();
 void next_sym();

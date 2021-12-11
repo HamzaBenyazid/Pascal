@@ -63,6 +63,9 @@ void next_sym(){
             }else if (isdigit(curr_char)){
                 read_number();break;
             }else{
+                
+                    printf("%d\n",curr_char);
+                
                 curr_sym=ERROR_TOKEN;return;
             }
     }
@@ -87,7 +90,10 @@ void read_word(){
     }
     word[i]='\0';
     LEX_CODE code = keyword_code(word);
-    if(code==-1) curr_sym=ID_TOKEN;
+    if(code==-1) {
+        curr_sym=ID_TOKEN;
+        add_to_id_array(word);
+    }
     else curr_sym=code;
 }
 void read_string(){
@@ -102,7 +108,7 @@ void read_string(){
     lex_get_next_char();
 }
 void skip_white_spaces(){
-    while(curr_char==' '||curr_char=='\t'||curr_char=='\n'){
+    while(curr_char==' '||curr_char=='\t'||curr_char=='\n'||curr_char=='\r'){
         lex_get_next_char();
     }
 }
@@ -126,6 +132,8 @@ LEX_CODE keyword_code(char* word){
     return -1;
 }
 void analy_lex(FILE *fp){
+    ids_arr_cursor = 0;
+    last_keyword = -1;
     lex_get_next_char();
     int i=0;
     while(curr_sym!=FIN_TOKEN && curr_sym!=ERROR_TOKEN){

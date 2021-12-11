@@ -56,4 +56,21 @@ LEX_CODE curr_sym;
 
 LEX_CODE symbols[255];
 
+LEX_CODE last_keyword;
+
+typedef enum { //Type de symbole
+    VAR_TYPE,
+    CONST_TYPE,
+    PROGRAM_TYPE
+} SYM_TYPE;
+
+typedef struct { //Type de tableau d'identifiants
+    char* value;
+    SYM_TYPE type;
+} IDS_ARR_TYPE;
+
+IDS_ARR_TYPE IDS_ARR[100];
+
+int ids_arr_cursor;
+
 #endif
