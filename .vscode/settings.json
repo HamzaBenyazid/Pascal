@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "analy_lex.h": "c",
+        "analy_syn.h": "c",
+        "cstdlib": "c",
+        "stdio.h": "c",
+        "analy_sem.h": "c"
+    },
+    "cSpell.words": [
+        "addop",
+        "affec",
+        "analy",
+        "insts",
+        "tantque"
+    ]
+}
