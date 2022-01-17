@@ -5,5 +5,3 @@ begin
    x:=tata+titi;
    write(x);
 end.
-
-

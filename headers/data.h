@@ -54,7 +54,11 @@ extern const LANGUAGE_KEYWORD pascal_keywords[];
 extern const int number_of_keywords;
 LEX_CODE curr_sym;
 
-LEX_CODE symbols[255];
+typedef struct {
+    LEX_CODE token;
+    int line;
+} SYMBOL;
+SYMBOL symbols[255];
 
 LEX_CODE last_keyword;
 
@@ -72,5 +76,7 @@ typedef struct { //Type de tableau d'identifiants
 IDS_ARR_TYPE IDS_ARR[100];
 
 int ids_arr_cursor;
+
+int current_line;
 
 #endif

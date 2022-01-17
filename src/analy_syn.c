@@ -3,11 +3,11 @@
 int cursor=0;
 
 void printError(LEX_CODE code){
-    printf("Erreur : %s\n",TOKEN_ERRORS[code]);
+    printf("Error in line %d: %s\n",symbols[cursor-1].line,TOKEN_ERRORS[code]);
 }
 
 void test_sym(LEX_CODE code){
-    if(symbols[cursor]==code){
+    if(symbols[cursor].token==code){
         cursor++;
     }else {
         printError(code);
@@ -35,31 +35,31 @@ void block(){
 }
 
 void consts(){
-    if(symbols[cursor]==CONST_TOKEN){
+    if(symbols[cursor].token==CONST_TOKEN){
         test_sym(CONST_TOKEN);
         do{
             test_sym(ID_TOKEN);
             test_sym(EG_TOKEN);
             test_sym(NUM_TOKEN);
             test_sym(PV_TOKEN);
-        }while(symbols[cursor]!=VAR_TOKEN);
-    }else if(symbols[cursor]!=VAR_TOKEN){
+        }while(symbols[cursor].token!=VAR_TOKEN);
+    }else if(symbols[cursor].token!=VAR_TOKEN){
         printError(VAR_TOKEN);
         exit(EXIT_FAILURE);
     }        
 }
 
 void vars(){
-    if(symbols[cursor]==VAR_TOKEN){
+    if(symbols[cursor].token==VAR_TOKEN){
         test_sym(VAR_TOKEN);
         test_sym(ID_TOKEN);
-        while(symbols[cursor]!=PV_TOKEN)
+        while(symbols[cursor].token!=PV_TOKEN)
         {
             test_sym(VIR_TOKEN);
             test_sym(ID_TOKEN);
         }
         test_sym(PV_TOKEN);
-    }else if(symbols[cursor]!=BEGIN_TOKEN){
+    }else if(symbols[cursor].token!=BEGIN_TOKEN){
         printError(BEGIN_TOKEN);//TODO:
         exit(EXIT_FAILURE);
     }
@@ -68,14 +68,14 @@ void vars(){
 void insts(){
     test_sym(BEGIN_TOKEN);
     inst();
-    while(symbols[cursor]!=END_TOKEN){
+    while(symbols[cursor].token!=END_TOKEN){
         test_sym(PV_TOKEN);
         inst();
     }
     test_sym(END_TOKEN);
 }
 void inst(){
-    switch(symbols[cursor]){
+    switch(symbols[cursor].token){
         case BEGIN_TOKEN: insts();break;
         case ID_TOKEN: affec();break;
         case IF_TOKEN: si();break;
@@ -83,6 +83,7 @@ void inst(){
         case WRITE_TOKEN: ecrire();break;
         case READ_TOKEN: lire();break;
         case END_TOKEN : break;
+        case PV_TOKEN: break;
         default: printError(ERROR_TOKEN);exit(EXIT_FAILURE);
     }
 }
@@ -95,7 +96,9 @@ void affec(){
 
 void expr(){
     term();
-    while(symbols[cursor]!=PV_TOKEN && symbols[cursor!=END_TOKEN]){
+    LEX_CODE cur_sym_tok = symbols[cursor].token;
+    while(cur_sym_tok!=VIR_TOKEN && cur_sym_tok!=PF_TOKEN
+    && !(cur_sym_tok==EG_TOKEN || cur_sym_tok==DIFF_TOKEN ||cur_sym_tok == SUP_TOKEN || cur_sym_tok==INF_TOKEN || cur_sym_tok==SUPEG_TOKEN || cur_sym_tok==INFEG_TOKEN)){
         addop();
         term();
     }
@@ -103,14 +106,14 @@ void expr(){
 
 void term(){
     fact();
-    while(symbols[cursor]!=PV_TOKEN && symbols[cursor!=END_TOKEN]){
-        addop();
+    while(symbols[cursor].token!=PV_TOKEN && symbols[cursor].token!=END_TOKEN){
+        multop();
         term();
     }
 }
  
-void fact(){
-    switch(symbols[cursor]){
+void fact(){//TODO: fix
+    switch(symbols[cursor].token){
         case ID_TOKEN: test_sym(ID_TOKEN);break;
         case NUM_TOKEN: test_sym(NUM_TOKEN);break;
         default: expr();
@@ -118,7 +121,15 @@ void fact(){
 }
 
 void addop(){
-    if(symbols[cursor]==PLUS_TOKEN||symbols[cursor]==MOINS_TOKEN){
+    if(symbols[cursor].token==PLUS_TOKEN||symbols[cursor].token==MOINS_TOKEN){
+        cursor++;
+    }else{
+        printError(ERROR_TOKEN);
+        exit(EXIT_FAILURE);
+    }
+}
+void multop(){
+    if(symbols[cursor].token==MULT_TOKEN||symbols[cursor].token==DIV_TOKEN){
         cursor++;
     }else{
         printError(ERROR_TOKEN);
@@ -140,7 +151,7 @@ void cond(){
 }
 
 void relop(){
-    LEX_CODE cd = symbols[cursor]; 
+    LEX_CODE cd = symbols[cursor].token; 
     if(cd==EG_TOKEN || cd==DIFF_TOKEN ||cd == SUP_TOKEN || cd==INF_TOKEN || cd==SUPEG_TOKEN || cd==INFEG_TOKEN){
         cursor++;
     }else{
@@ -160,7 +171,7 @@ void ecrire(){
     test_sym(WRITE_TOKEN);
     test_sym(PO_TOKEN);
     expr();
-    while(symbols[cursor]!=PF_TOKEN){
+    while(symbols[cursor].token!=PF_TOKEN){
         test_sym(VIR_TOKEN);
         expr();
     }
@@ -171,7 +182,7 @@ void lire(){
     test_sym(READ_TOKEN);
     test_sym(PO_TOKEN);
     test_sym(ID_TOKEN);
-    while(symbols[cursor]!=PF_TOKEN){
+    while(symbols[cursor].token!=PF_TOKEN){
         test_sym(VIR_TOKEN);
         test_sym(ID_TOKEN);
     }

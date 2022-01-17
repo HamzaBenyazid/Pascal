@@ -71,7 +71,7 @@ void next_sym(){
     }
 }
 void print_token(LEX_CODE curr_sym){
-    printf("%s\n",TOKEN_NAMES[curr_sym]);
+    printf("%s line %d\n",TOKEN_NAMES[curr_sym],current_line);
 }
 
 void read_number(){
@@ -109,6 +109,7 @@ void read_string(){
 }
 void skip_white_spaces(){
     while(curr_char==' '||curr_char=='\t'||curr_char=='\n'||curr_char=='\r'){
+        if(curr_char=='\n') current_line++;
         lex_get_next_char();
     }
 }
@@ -132,14 +133,15 @@ LEX_CODE keyword_code(char* word){
     return -1;
 }
 void analy_lex(FILE *fp){
+    current_line = 1;
     ids_arr_cursor = 0;
     last_keyword = -1;
     lex_get_next_char();
     int i=0;
     while(curr_sym!=FIN_TOKEN && curr_sym!=ERROR_TOKEN){
         next_sym();
-        print_token(curr_sym);
-        symbols[i]=curr_sym;
+        print_token(curr_sym); //for debuging 
+        symbols[i]=(SYMBOL){curr_sym,current_line};
         i++;
     }
 }

@@ -34,17 +34,17 @@ const char* TOKEN_NAMES[]={
     "WRITE_TOKEN",
     "VAR_TOKEN"
 };
-const char* TOKEN_ERRORS[]={
+const char* TOKEN_ERRORS[]={//TODO: 
     "ID_ERROR",
     "NUM_ERROR",
     "LEX_ERROR",
-    "PV_ERROR",
-    "PT_ERROR",
+    "expected ';' not found",
+    "expected '.' not found",
     "PLUS_ERROR",
     "MOINS_ERROR",
     "MULT_ERROR",
     "DIV_ERROR",
-    "VIR_ERROR",
+    "expected ',' not found",
     "AFF_ERROR",
     "INF_ERROR",
     "INFEG_ERROR",
